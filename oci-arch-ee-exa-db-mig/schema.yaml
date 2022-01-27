@@ -1,0 +1,437 @@
+## Copyright (c) 2022, Oracle and/or its affiliates.
+## All rights reserved. The Universal Permissive License (UPL), Version 1.0 as shown at http://oss.oracle.com/licenses/upl
+
+title: "Create compute instance and Exadata Cloud Service (Quarter Rack) database system in Oracle Cloud Infrastructure"
+stackDescription: "This code will help you deploy a compute instance and Exadata Cloud Service (Quarter Rack) database system in Oracle Cloud"
+schemaVersion: 1.1.0
+version: "20190404"
+locale: "en"
+
+variableGroups:
+- title: General Configuration
+  visible: false
+  variables:
+  - tenancy_ocid
+  - region
+  - release
+  - availability_domain_number
+
+- title: Required Configuration
+  visible: true  
+  variables:
+  - starter_db_admin_password
+  - compartment_ocid
+  - availability_domain_name
+  - use_bastion_service
+  - show_advanced  
+
+- title: Compute Optional Configuration
+  visible: 
+    and:
+      - show_advanced
+  variables:   
+  - ssh_public_key
+  - instance_os
+  - linux_os_version
+  - instance_shape
+  - instance_shape_flex_ocpus
+  - instance_shape_flex_memory
+
+- title: ExaCS Infra Optional Configuration
+  visible: 
+    and:
+      - show_advanced
+  variables:  
+  - exacs_x8_infra
+  - exacs_infra_shape
+  - exacs_infra_display_name
+  - exacs_infra_compute_count
+  - exacs_infra_storage_count
+  - exacs_infra_maintenance_window_weeks_of_month
+
+- title: ExaCS VM Cluster Optional Configuration
+  visible: 
+    and:
+      - show_advanced
+  variables:  
+  - exacs_vm_cluster_cpu_core_count
+  - exacs_vm_cluster_ocpu_count
+  - exacs_vm_cluster_name
+  - exacs_vm_cluster_data_storage_percentage
+  - exacs_vm_cluster_display_name
+  - exacs_vm_cluster_gi_version
+  - exacs_vm_cluster_hostname
+  - exacs_vm_cluster_license_model
+
+- title: ExaCS Starter Database Optional Configuration
+  visible: 
+    and:
+      - show_advanced
+  variables:
+  - starter_db_name
+  - starter_db_version
+  - starter_db_n_character_set
+  - starter_db_character_set
+  - starter_db_workload
+  - starter_db_pdb_name
+  - starter_db_auto_backup_enabled
+  - starter_db_auto_backup_window
+  - starter_db_recovery_window_in_days
+
+variables:
+
+  show_advanced:
+    type: boolean
+    title: "Show advanced options?"
+    description: "Shows advanced options."
+    visible: true
+    default: false
+
+  compartment_ocid:
+    type: oci:identity:compartment:id
+    required: true
+    visible: true
+    title: Compartment
+    description: "Compartment where you want to create the solution resources."
+
+  availability_domain_name:
+    type: oci:identity:availabilitydomain:name
+    required: true
+    visible: true
+    title: "Availability Domain to be chosen"
+    description: "Choose Availability Domain where your infrastructure will be deployed."
+    dependsOn:
+      regionName: ${region}
+      compartmentId: ${compartment_ocid}
+
+  region:
+    type: oci:identity:region:name
+    required: true
+    visible: true
+    title: Region
+    description: "Region where you want to deploy the resources defined by this stack."
+
+  starter_db_admin_password:
+    type: password
+    required: true
+    title: "ExaCS Starter Database Admin password"
+    description: "Type password for admin user in your DB System"
+    minLength: 12
+    maxLength: 30
+    pattern: ^[A-Za-z][A-Za-z0-9_#\$]+$ 
+
+  use_bastion_service:
+    type: boolean
+    visible: true
+    default: false
+    required: false
+    title: "Use OCI Bastion Service"
+    description: "Check the box to use OCI Bastion Service for accessing private resources."
+
+  # Optional Configuration
+
+  ssh_public_key:
+    type: oci:core:ssh:publickey
+    title: "Public SSH Key"
+    description: "Choose public SSH Key to be uploaded into compute instances."
+    required: false
+
+  instance_os: 
+    type: enum
+    required: false
+    default: "Oracle Linux"
+    title: "Operating system"
+    description: "Choose Operating System for your compute instances."
+    enum:
+      - "Oracle Linux"
+
+  linux_os_version:
+    type: enum
+    required: false
+    default: "8"
+    title: "Operating system version"
+    description: "Choose Operating System version for your compute instances."
+    enum:
+      - "8"
+      - "7.9"
+
+  instance_shape:
+    type: oci:core:instanceshape:name
+    required: false
+    default: "VM.Standard.E4.Flex"
+    title: "Instance Shape"
+    description: "Choose instance shape for your compute instances."
+    dependsOn:
+      compartmentId: ${compartment_ocid}
+
+  instance_shape_flex_ocpus:
+    type: number
+    required: false
+    minimum: 1
+    maximum: 128
+    multipleOf: 1
+    default: 1
+    title: "Flex Shape OCPUs"
+    description: "Choose number of OCPUs for Flex Shape."
+    visible:
+      and:
+        - or:
+          - eq:
+            - instance_shape 
+            - "VM.Standard.E3.Flex"
+          - eq:
+            - instance_shape 
+            - "VM.Standard.E4.Flex"
+
+  instance_shape_flex_memory:
+    type: number
+    required: false
+    minimum: 1
+    maximum: 128
+    multipleOf: 1
+    default: 10
+    title: "Flex Shape Memory (GB)"
+    description: "Choose number GB for Flex Shape Memory."
+    visible:
+      and:
+        - or:
+          - eq:
+            - instance_shape 
+            - "VM.Standard.E3.Flex"
+          - eq:
+            - instance_shape
+            - "VM.Standard.E4.Flex"
+
+
+  exacs_x8_infra:
+    type: boolean
+    title: "Deploy ExaCS X8 Infrastructure?"
+    description: "Check if you want deploy ExaCS X8 Infrastructure with compute and cell nodes counts available to choose."
+    default: true       
+
+  exacs_infra_shape:
+    type: enum
+    required: false
+    default: "Exadata.Quarter2.92"
+    title: "ExaCS Infrastructure Shape"
+    description: "Choose the shape for your ExaCS Infrastructure."
+    enum:
+      - "Exadata.Quarter1.84"
+      - "Exadata.Half1.168"
+      - "Exadata.Full1.336"
+      - "Exadata.Quarter2.92"
+      - "Exadata.Half2.184"
+      - "Exadata.Full2.368"
+      - "Exadata.Quarter3.100"
+      - "Exadata.Half3.200"
+      - "Exadata.Full3.400"
+
+  exacs_infra_display_name:
+    type: string
+    required: false
+    default: "exacs-infra"
+    title: "ExaCS Infrastructure Display Name"
+    description: "Type display name for your ExaCS Infrastructure."  
+
+
+  exacs_infra_compute_count:
+    type: number
+    required: false
+    minimum: 2
+    maximum: 255
+    multipleOf: 1
+    default: 2
+    title: "ExaCS Infrastructure Compute Nodes Count"
+    description: "Choose Number of Compute Nodes for ExaCS Infrastructure." 
+    visible: 
+      and:
+        - exacs_x8_infra
+
+  exacs_infra_storage_count:
+    type: number
+    required: false
+    minimum: 3
+    maximum: 255
+    multipleOf: 1
+    default: 3
+    title: "ExaCS Infrastructure Storage Nodes Count"
+    description: "Choose Number of Storage Nodes for ExaCS Infrastructure." 
+    visible: 
+      and:
+        - exacs_x8_infra
+
+  exacs_infra_maintenance_window_weeks_of_month:
+    type: number
+    required: false
+    minimum: 1
+    maximum: 12
+    multipleOf: 1
+    default: 2
+    title: "ExaCS Infrastructure Maintenance Window Weeks of Month"
+    description: "Choose ExaCS Infrastructure Maintenance Window Weeks of Month." 
+
+  exacs_vm_cluster_cpu_core_count:
+    type: number
+    required: false
+    minimum: 2
+    maximum: 50
+    multipleOf: 1
+    default: 4
+    title: "ExaCS VM Cluster CPU core count"
+    description: "Choose CPU core count for your ExaCS VM Cluster." 
+
+  exacs_vm_cluster_ocpu_count:
+    type: number
+    required: false
+    minimum: 0.1
+    maximum: 50
+    multipleOf: 0.1
+    default: 4.0
+    title: "ExaCS VM Cluster OCPU count"
+    description: "Choose OCPU count for your ExaCS VM Cluster." 
+
+  exacs_vm_cluster_name:
+    type: string
+    required: false
+    default: "exacscls"
+    title: "ExaCS VM Cluster Name"
+    description: "VM Cluster Name for your ExaCS deployment"
+
+  exacs_vm_cluster_data_storage_percentage:
+    type: enum
+    required: false
+    default: "80"
+    title: "ExaCS VM Cluster Storage Percentage"    
+    description: "Choose database storage percentage for your ExaCS VM Cluster."
+    enum: 
+      - "35"
+      - "40"
+      - "80"
+
+  exacs_vm_cluster_display_name:
+    type: string
+    required: false
+    default: "exacs_cluster"
+    title: "ExaCS VM Cluster Display Name" 
+    description: "Type database display for your ExaCS VM Cluster."
+
+  exacs_vm_cluster_gi_version:
+    type: enum
+    required: false
+    default: "19.0.0.0"
+    title: "Choose ExaCS VM Cluster GI Version." 
+    description: "Choose ExaCS VM Cluster Grid Infrastructure Version." 
+    enum:
+      - "19.0.0.0"
+      - "19.13.0.0.0"
+
+  exacs_vm_cluster_hostname:
+    type: string
+    required: false
+    default: "exacs-q292"
+    title: "ExaCS VM Cluster Hostname" 
+    description: "Type ExaCS VM Cluster Hostname."  
+
+  exacs_vm_cluster_license_model:
+    type: enum
+    required: false
+    default: "LICENSE_INCLUDED"
+    title: "ExaCS VM Cluster License Model"
+    description: "Choose ExaCS VM Cluster License Model."
+    enum:
+      - "LICENSE_INCLUDED"
+      - "BRING_YOUR_OWN_LICENSE"
+
+  starter_db_name:
+    type: string
+    required: false
+    default: "exadb1"
+    title: "ExaCS Stater Database display name"
+    description: "Type DB Name for your ExaCS Starter Database (deployed in default DB HOME)." 
+
+  starter_db_version:
+    type: enum
+    required: false
+    default: "19.0.0.0"
+    title: "ExaCS Starter Database Version"
+    description: "Choose DB version for your ExaCS Starter Database." 
+    enum:
+      - "19.0.0.0"
+
+  starter_db_n_character_set:
+    type: enum
+    required: false
+    default: "AL16UTF16"
+    title: "ExaCS Starter Database NCharacter set"
+    description: "Choose Database NCharacter set for your ExaCS Starter Database." 
+    enum:
+      - "AL16UTF16"
+
+  starter_db_character_set:
+    type: enum
+    required: false
+    default: "AL32UTF8"
+    title: "ExaCS Starter Database Character set"
+    description: "Choose Database Character set for your ExaCS Starter Database." 
+    enum:
+      - "AL32UTF8"
+
+  starter_db_workload:
+    type: enum
+    required: false
+    default: "OLTP"
+    title: "ExaCS Starter Database workload"
+    description: "Choose Database workload for your ExaCS Starter Database." 
+    enum:
+      - "OLTP"
+      - "DW"
+
+  starter_db_pdb_name:
+    type: string
+    default: "PDB1"
+    required: false
+    title: "ExaCS Starter Database PDB name"
+    description: "Choose PDB name for your ExaCS Starter Database."
+
+  starter_db_auto_backup_enabled:
+    type: boolean
+    required: false
+    default: true
+    title: "ExaCS Starter Database Autobackup enabled"
+    description: "Choose if database autobackup will be enabled for your ExaCS Starter Database."
+
+  starter_db_auto_backup_window:
+    type: enum
+    required: false
+    default: "SLOT_TWO"
+    title: "ExaCS Starter Database Autobackup window"
+    description: "Choose database autobackup window for your ExaCS Starter Database." 
+    enum:
+      - "SLOT_TWO"    
+
+  starter_db_recovery_window_in_days:
+    type: enum
+    required: false
+    default: "45"
+    title: "ExaCS Starter Database Recovery window in days"
+    description: "Choose database recovery window in days for your ExaCS Starter Database." 
+    enum:
+      - "7"
+      - "15"
+      - "30"
+      - "45"
+      - "60"
+
+  release:
+    type: string
+    required: false
+    visible: false
+    title: "Reference Architecture Release (OCI Architecture Center)"
+
+outputs:
+  
+  generated_ssh_private_key:
+    title: "Generated SSH Private Key"
+    displayText: "Generated SSH Private Key"
+    type: string
+    visible: true
