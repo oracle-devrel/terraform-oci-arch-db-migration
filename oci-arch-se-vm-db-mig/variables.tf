@@ -33,7 +33,7 @@ variable "linux_os_version" {
 }
 
 variable "instance_shape" {
-  default = "VM.Standard.E3.Flex"
+  default = "VM.Standard.E4.Flex"
 }
 
 variable "instance_shape_flex_ocpus" {

@@ -137,7 +137,7 @@
       instance_shape:
         type: oci:core:instanceshape:name
         required: false
-        default: "VM.Standard.E3.Flex"
+        default: "VM.Standard.E4.Flex"
         title: "Instance Shape"
         description: "Choose instance shape for your compute instances."
         dependsOn:
