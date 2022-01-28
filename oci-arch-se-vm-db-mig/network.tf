@@ -48,7 +48,8 @@ resource "oci_core_route_table" "apprt" {
   vcn_id         = oci_core_virtual_network.vcn.id
   display_name   = "app-rt-table"
   route_rules {
-    cidr_block        = "0.0.0.0/0"
+    destination       = "0.0.0.0/0"
+    destination_type  = "CIDR_BLOCK"
     network_entity_id = oci_core_nat_gateway.ng.id
   }
   defined_tags = {"${oci_identity_tag_namespace.ArchitectureCenterTagNamespace.name}.${oci_identity_tag.ArchitectureCenterTag.name}" = var.release }
