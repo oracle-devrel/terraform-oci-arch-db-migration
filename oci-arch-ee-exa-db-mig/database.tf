@@ -1,4 +1,4 @@
-## Copyright (c) 2022, Oracle and/or its affiliates.
+## Copyright (c) 2022, Oracle and/or its affiliates. 
 ## All rights reserved. The Universal Permissive License (UPL), Version 1.0 as shown at http://oss.oracle.com/licenses/upl
 
 resource "oci_database_cloud_exadata_infrastructure" "exacs_infra" {
@@ -16,6 +16,7 @@ resource "oci_database_cloud_exadata_infrastructure" "exacs_infra" {
   lifecycle {
     ignore_changes = [maintenance_window[0].weeks_of_month]
   }
+  defined_tags = { "${oci_identity_tag_namespace.ArchitectureCenterTagNamespace.name}.${oci_identity_tag.ArchitectureCenterTag.name}" = var.release }
 }
 
 resource "oci_database_cloud_vm_cluster" "exacs_vm_cluster" {
@@ -36,32 +37,34 @@ resource "oci_database_cloud_vm_cluster" "exacs_vm_cluster" {
   lifecycle {
     ignore_changes = [ssh_public_keys, defined_tags]
   }
+  defined_tags = { "${oci_identity_tag_namespace.ArchitectureCenterTagNamespace.name}.${oci_identity_tag.ArchitectureCenterTag.name}" = var.release }
 }
 
-resource "oci_database_database" "exacs_starter_database" {
-  db_home_id = data.oci_database_db_homes.exacs_db_homes.db_homes[0].id
-  source     = "NONE"
-  db_version = var.starter_db_version
+resource "oci_database_db_home" "exacs_db_home" {
+  vm_cluster_id = oci_database_cloud_vm_cluster.exacs_vm_cluster.id
 
   database {
-    admin_password = var.starter_db_admin_password
-    character_set  = var.starter_db_character_set
+    admin_password      = var.starter_db_admin_password
+    db_name             = var.starter_db_name
+    character_set       = var.starter_db_character_set
+    ncharacter_set      = var.starter_db_n_character_set
+    db_workload         = var.starter_db_workload
+    pdb_name            = var.starter_db_pdb_name
     db_backup_config {
-      auto_backup_enabled = var.starter_db_auto_backup_enabled
-      auto_backup_window  = var.starter_db_auto_backup_window
+      auto_backup_enabled = false
     }
-    db_name        = var.starter_db_name
-    db_unique_name = var.starter_db_name
-    db_workload    = var.starter_db_workload
-    ncharacter_set = var.starter_db_n_character_set
-    pdb_name       = var.starter_db_pdb_name
-
+    defined_tags = { "${oci_identity_tag_namespace.ArchitectureCenterTagNamespace.name}.${oci_identity_tag.ArchitectureCenterTag.name}" = var.release }
   }
+
+  # VM_CLUSTER_BACKUP can also be specified as a source for cloud VM clusters.
+  source       = "VM_CLUSTER_NEW"
+  db_version   = var.starter_db_version
+  display_name = var.starter_db_name
 
   lifecycle {
-    ignore_changes = [database[0].admin_password, source]
+    ignore_changes = [defined_tags]
   }
-}
-
+  defined_tags = { "${oci_identity_tag_namespace.ArchitectureCenterTagNamespace.name}.${oci_identity_tag.ArchitectureCenterTag.name}" = var.release }
+} 
 
 
