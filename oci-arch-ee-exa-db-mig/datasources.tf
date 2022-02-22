@@ -65,14 +65,3 @@ data "oci_database_cloud_vm_cluster" "exacs_vm_cluster" {
   cloud_vm_cluster_id = oci_database_cloud_vm_cluster.exacs_vm_cluster.id
 }
 
-
-data "oci_database_db_homes" "exacs_db_homes" {
-  depends_on     = [oci_database_cloud_vm_cluster.exacs_vm_cluster]
-  compartment_id = var.compartment_ocid
-  vm_cluster_id  = oci_database_cloud_vm_cluster.exacs_vm_cluster.id
-}
-
-data "oci_database_databases" "exacs_databases" {
-  compartment_id = var.compartment_ocid
-  db_home_id     = data.oci_database_db_homes.exacs_db_homes.db_homes[0].id
-}

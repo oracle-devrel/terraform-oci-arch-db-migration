@@ -10,11 +10,6 @@ output "bastion_ssh_metadata" {
   value = oci_bastion_session.ssh_via_bastion_service.*.ssh_metadata
 }
 
-
-#output "exacs_db_versions" {
-#  value = data.oci_database_db_versions.exacs_db_versions
-#}
-
 output "exacs_infrastructure" {
   value = data.oci_database_cloud_exadata_infrastructure.exacs_infrastructure
 }
@@ -23,10 +18,3 @@ output "exacs_vm_cluster" {
   value = data.oci_database_cloud_vm_cluster.exacs_vm_cluster
 }
 
-output "exacs_db_homes" {
-  value = data.oci_database_db_homes.exacs_db_homes
-}
-
-output "exacs_databases" {
-  value = data.oci_database_databases.exacs_databases
-}

@@ -18,7 +18,7 @@ variable "availability_domain_number" {
 
 variable "release" {
   description = "Reference Architecture Release (OCI Architecture Center)"
-  default     = "1.3.2"
+  default     = "1.3.3"
 }
 
 # OS Images
