@@ -1,3 +1,150 @@
-// see https://github.com/oracle-devrel/action-release-zip-maker for docs
 [
-]
+    {
+      "action": "create_zip",
+      "file_name": "terraform-oci-arch-ee-atp-db-mig-stack-latest.zip",
+      "files": [
+        {
+          "src_pattern": "oci-arch-ee-atp-db-mig/*.tf",
+          "dst_path": ".",
+          "exclude": [
+            "oci-arch-ee-atp-db-mig/provider.tf",
+            "oci-arch-ee-atp-db-mig/variables.tf"
+          ]
+        },
+        {
+          "src": "LICENSE"
+        },
+        {
+          "src": "oci-arch-ee-atp-db-mig/schema.yaml",
+          "dst": "schema.yaml"
+        },
+        {
+          "src": "oci-arch-ee-atp-db-mig/orm/variables.tf",
+          "dst": "variables.tf"
+        },
+        {
+          "src": "oci-arch-ee-atp-db-mig/orm/provider.tf",
+          "dst": "provider.tf"
+        },
+        {
+          "src_pattern": "oci-arch-ee-atp-db-mig/scripts/*",
+          "dst_path": "."
+        }
+      ]
+    },
+    {
+      "action": "upload_file",
+      "file_name": "terraform-oci-arch-ee-atp-db-mig-stack-latest.zip"
+    },
+    {
+      "action": "create_zip",
+      "file_name": "terraform-oci-arch-ee-bm-db-mig-stack-latest.zip",
+      "files": [
+        {
+          "src_pattern": "oci-arch-ee-bm-db-mig/*.tf",
+          "dst_path": ".",
+          "exclude": [
+            "oci-arch-ee-bm-db-mig/provider.tf",
+            "oci-arch-ee-bm-db-mig/variables.tf"
+          ]
+        },
+        {
+          "src": "LICENSE"
+        },
+        {
+          "src": "oci-arch-ee-bm-db-mig/schema.yaml",
+          "dst": "schema.yaml"
+        },
+        {
+          "src": "oci-arch-ee-bm-db-mig/orm/variables.tf",
+          "dst": "variables.tf"
+        },
+        {
+          "src": "oci-arch-ee-bm-db-mig/orm/provider.tf",
+          "dst": "provider.tf"
+        },
+        {
+          "src_pattern": "oci-arch-ee-bm-db-mig/scripts/*",
+          "dst_path": "."
+        }
+      ]
+    },
+    {
+      "action": "upload_file",
+      "file_name": "terraform-oci-arch-ee-bm-db-mig-stack-latest.zip"
+    },
+    {
+      "action": "create_zip",
+      "file_name": "terraform-oci-arch-ee-exa-db-mig-stack-latest.zip",
+      "files": [
+        {
+          "src_pattern": "oci-arch-ee-exa-db-mig/*.tf",
+          "dst_path": ".",
+          "exclude": [
+            "oci-arch-ee-exa-db-mig/provider.tf",
+            "oci-arch-ee-exa-db-mig/variables.tf"
+          ]
+        },
+        {
+          "src": "LICENSE"
+        },
+        {
+          "src": "oci-arch-ee-exa-db-mig/schema.yaml",
+          "dst": "schema.yaml"
+        },
+        {
+          "src": "oci-arch-ee-exa-db-mig/orm/variables.tf",
+          "dst": "variables.tf"
+        },
+        {
+          "src": "oci-arch-ee-exa-db-mig/orm/provider.tf",
+          "dst": "provider.tf"
+        },
+        {
+          "src_pattern": "oci-arch-ee-exa-db-mig/scripts/*",
+          "dst_path": "."
+        }
+      ]
+    },
+    {
+      "action": "upload_file",
+      "file_name": "terraform-oci-arch-ee-exa-db-mig-stack-latest.zip"
+    },
+    {
+      "action": "create_zip",
+      "file_name": "terraform-oci-arch-se-vm-db-mig-stack-latest.zip",
+      "files": [
+        {
+          "src_pattern": "oci-arch-se-vm-db-mig/*.tf",
+          "dst_path": ".",
+          "exclude": [
+            "oci-arch-se-vm-db-mig/provider.tf",
+            "oci-arch-se-vm-db-mig/variables.tf"
+          ]
+        },
+        {
+          "src": "LICENSE"
+        },
+        {
+          "src": "oci-arch-se-vm-db-mig/schema.yaml",
+          "dst": "schema.yaml"
+        },
+        {
+          "src": "oci-arch-se-vm-db-mig/orm/variables.tf",
+          "dst": "variables.tf"
+        },
+        {
+          "src": "oci-arch-se-vm-db-mig/orm/provider.tf",
+          "dst": "provider.tf"
+        },
+        {
+          "src_pattern": "oci-arch-se-vm-db-mig/scripts/*",
+          "dst_path": "."
+        }
+      ]
+    },
+    {
+      "action": "upload_file",
+      "file_name": "terraform-oci-arch-se-vm-db-mig-stack-latest.zip"
+    },
+  ]

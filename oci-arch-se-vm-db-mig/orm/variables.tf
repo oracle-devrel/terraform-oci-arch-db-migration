@@ -4,9 +4,9 @@
 # Variables
 variable "tenancy_ocid" {}
 variable "compartment_ocid" {}
-variable "user_ocid" {}
-variable "fingerprint" {}
-variable "private_key_path" {}
+#variable "user_ocid" {}
+#variable "fingerprint" {}
+#variable "private_key_path" {}
 variable "region" {}
 
 variable "availability_domain_name" {
@@ -65,15 +65,11 @@ variable "volume_attachment_type" {
 }
 
 variable "db_system_shape" {
-  default = "BM.DenseIO2.52"
-}
-
-variable "db_system_cpu_core_count" {
-  default = "2"
+  default = "VM.Standard2.4"
 }
 
 variable "db_edition" {
-  default = "ENTERPRISE_EDITION"
+  default = "STANDARD_EDITION"
 }
 
 variable "db_admin_password" {
@@ -84,7 +80,7 @@ variable "db_name" {
 }
 
 variable "db_version" {
-  default = "12.1.0.2"
+  default = "12.2.0.1"
 }
 
 variable "db_home_display_name" {
@@ -138,6 +134,7 @@ variable "node_count" {
 variable "data_storage_percentage" {
   default = "40"
 }
+
 
 variable "db_auto_backup_enabled" {
   default = "true"

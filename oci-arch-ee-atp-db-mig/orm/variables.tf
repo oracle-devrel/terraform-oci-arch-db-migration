@@ -4,9 +4,9 @@
 # Variables
 variable "tenancy_ocid" {}
 variable "compartment_ocid" {}
-variable "user_ocid" {}
-variable "fingerprint" {}
-variable "private_key_path" {}
+#variable "user_ocid" {}
+#variable "fingerprint" {}
+#variable "private_key_path" {}
 variable "region" {}
 
 variable "availability_domain_name" {
@@ -64,93 +64,52 @@ variable "volume_attachment_type" {
   default = "paravirtualized"
 }
 
-variable "db_system_shape" {
-  default = "BM.DenseIO2.52"
+variable "autonomous_database_private_endpoint" {
+  default = true
 }
 
-variable "db_system_cpu_core_count" {
-  default = "2"
+variable "autonomous_database_cpu_core_count" {
+  default = "4"
 }
 
-variable "db_edition" {
-  default = "ENTERPRISE_EDITION"
+variable "autonomous_database_admin_password" {
 }
 
-variable "db_admin_password" {
+variable "autonomous_database_db_name" {
+  default = "migatp"
 }
 
-variable "db_name" {
-  default = "aTFdb"
+variable "autonomous_database_display_name" {
+  default = "MigratedATP"
 }
 
-variable "db_version" {
-  default = "12.1.0.2"
+variable "autonomous_private_endpoint_label" {
+  default = "migatppe"
 }
 
-variable "db_home_display_name" {
-  default = "MyTFDBHome"
+variable "autonomous_database_db_version" {
+  default = "19c"
 }
 
-variable "db_disk_redundancy" {
-  default = "HIGH"
+variable "autonomous_database_is_auto_scaling_enabled" {
+  default = "false"
 }
 
-variable "db_system_display_name" {
-  default = "MyTFDBSystem"
-}
-
-variable "hostname" {
-  default = "myoracledb"
-}
-
-variable "host_user_name" {
-  default = "opc"
-}
-
-variable "n_character_set" {
-  default = "AL16UTF16"
-}
-
-variable "character_set" {
-  default = "AL32UTF8"
-}
-
-variable "db_workload" {
-  default = "OLTP"
-}
-
-variable "pdb_name" {
-  default = "pdbName"
-}
-
-variable "data_storage_size_in_gb" {
-  default = "256"
-}
-
-variable "license_model" {
-  default = "LICENSE_INCLUDED"
-}
-
-variable "node_count" {
+variable "autonomous_database_data_storage_size_in_tbs" {
   default = "1"
 }
 
-variable "data_storage_percentage" {
-  default = "40"
+variable "autonomous_database_db_workload" {
+  default = "OLTP"
 }
 
-variable "db_auto_backup_enabled" {
-  default = "true"
+variable "autonomous_database_license_model" {
+  default = "BRING_YOUR_OWN_LICENSE"
 }
 
-variable "db_auto_backup_window" {
-  default = "SLOT_TWO"
+variable "autonomous_database_data_safe_status" {
+  default = "NOT_REGISTERED"
 }
-
-variable "db_recovery_window_in_days" {
-  default = "45"
-}
-
 
 # Dictionary Locals
 locals {
@@ -164,3 +123,4 @@ locals {
 locals {
   is_flexible_node_shape = contains(local.compute_flexible_shapes, var.instance_shape)
 }
+
