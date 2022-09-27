@@ -130,10 +130,11 @@ variables:
   linux_os_version:
     type: enum
     required: false
-    default: "8"
+    default: "9"
     title: "Operating system version"
     description: "Choose Operating System version for your compute instances."
     enum:
+      - "9"
       - "8"
       - "7.9"
 

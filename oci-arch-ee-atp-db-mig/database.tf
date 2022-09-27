@@ -2,6 +2,7 @@
 ## All rights reserved. The Universal Permissive License (UPL), Version 1.0 as shown at http://oss.oracle.com/licenses/upl
 
 module "oci-adb" {
+  providers                             = { oci = oci.targetregion }
   source                                = "github.com/oracle-devrel/terraform-oci-arch-adb"
   adb_password                          = var.autonomous_database_admin_password
   compartment_ocid                      = var.compartment_ocid
