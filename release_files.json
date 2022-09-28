@@ -146,5 +146,5 @@
     {
       "action": "upload_file",
       "file_name": "terraform-oci-arch-se-vm-db-mig-stack-latest.zip"
-    },
+    }
   ]
