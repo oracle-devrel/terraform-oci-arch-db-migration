@@ -217,6 +217,7 @@ variables:
     title: "ExaCS Infrastructure Shape"
     description: "Choose the shape for your ExaCS Infrastructure."
     enum:
+      - "Exadata.X8M"
       - "Exadata.Quarter1.84"
       - "Exadata.Half1.168"
       - "Exadata.Full1.336"
